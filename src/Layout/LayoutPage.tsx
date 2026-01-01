@@ -11,7 +11,7 @@ const LayoutPage: React.FC = () => {
     { key: "/dashboard", icon: <HomeOutlined />, label: "Dashboard" },
     { key: "/orders", icon: <ShoppingCartOutlined />, label: "Orders" },
     { key: "/products", icon: <AppstoreOutlined />, label: "Products" },
-    { key: "/products/add", icon: <PlusOutlined />, label: "Add Product" }
+    { key: "/others", icon: <PlusOutlined />, label: "Others" }
   ]
 
   
