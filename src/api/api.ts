@@ -1,16 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosRequest } from "./../../utils/axios";
 import { SaveToken } from "./../../utils/axios";
-import axios from "axios";
 
 export const api = import.meta.env.VITE_URL_PRODUCTS;
 
 export const loginThunk = createAsyncThunk(
-  "auth/login",
-  async (
+  "auth/login", async (
     obj: { userName: string; password: string },
-    { rejectWithValue }
-  ) => {
+    { rejectWithValue } ) => {
     try {
       const { data } = await axiosRequest.post("/Account/login", obj);
       SaveToken(data.data);
@@ -120,3 +117,15 @@ export const EditProduct = createAsyncThunk(
     }
   }
 );
+
+
+export const userProfile = createAsyncThunk(
+  "todo/GetCategory", async () => {
+    try {
+      const { data } = await axiosRequest.get(`/UserProfile/get-user-profiles`);
+      return data.data;
+    } catch (error) {
+      console.error
+    }
+  }
+)
