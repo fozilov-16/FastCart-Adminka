@@ -1,24 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GetBrend, GetCategory, GetColor, GetProduct } from "../api/api";
-
-export interface CounterState {
-  products: {
-    id: number;
-    productName: string;
-    price: number;
-    quantity: number;
-    categoryName: string;
-  }[];
-  isLoading: boolean;
-}
-
-const initialState: CounterState = {
-  products: [],
-  categories: [],
-  brend: [],
-  color: [],
-  isLoading: false,
-};
+import {
+  GetBrend,
+  GetCategory,
+  GetColor,
+  GetProduct,
+  userProfile,
+} from "../api/api";
 
 export interface Product {
   id: number;
@@ -40,12 +27,49 @@ export interface Category {
   subCategories: SubCategory[];
 }
 
-export interface CounterState {
+export interface Profile {
+  id: string;
+  userId: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: number;
+  dob: number;
+}
+
+export interface TodoState {
   products: Product[];
   categories: Category[];
   brend: any[];
   color: any[];
+  profile: Profile[];
   isLoading: boolean;
+}
+
+const initialState: TodoState = {
+  products: [],
+  categories: [],
+  profile: [],
+  isLoading: false,
+  brend: [],
+  color: [],
+};
+
+export interface AddProductPayload {
+  ProductName: string;
+  Description: string;
+  Quantity: number;
+  Weight?: string;
+  Size?: string;
+  Code: string;
+  Price: number;
+  HasDiscount?: boolean;
+  DiscountPrice?: number;
+  SubCategoryId: number;
+  BrandId: number;
+  ColorId: number;
+  Images?: File[];
 }
 
 export const todoSlice = createSlice({

@@ -1,12 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { GetBrend, GetCategory, GetColor } from "../api/api";
+import { Link, useNavigate } from "react-router-dom";
+import { AddProduct, GetBrend, GetCategory, GetColor } from "../api/api";
 import type { AppDispatch, RootState } from "../store/store";
 
 export default function AddProducts() {
     const { categories, brend, color } = useSelector((state: RootState) => state.todo)
     const dispatch = useDispatch<AppDispatch>()
+    const [productName, setProductName] = useState("");
+    const [code, setCode] = useState("");
+    const [description, setDescription] = useState("");
+    const [quantity, setQuantity] = useState<number>(0);
+    const [price, setPrice] = useState<number>(0);
+    const [discountPrice, setDiscountPrice] = useState<number>(0);
+    const [hasDiscount, setHasDiscount] = useState(false);
+    const [weight, setWeight] = useState("");
+    const [size, setSize] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
+    const [selectedColor, setSelectedColor] = useState<number | null>(null);
+    const [images, setImages] = useState<File[]>([]);
+    const navigate = useNavigate()
 
     const colorMap: Record<string, string> = {
         pink: "#ec4899",
@@ -17,6 +31,29 @@ export default function AddProducts() {
         black: "#000000",
         white: "#ffffff",
         purple: "#a855f7",
+    };
+
+    const handleSave = () => {
+        if (!productName || !code || !selectedCategory || !selectedBrand || !selectedColor) {
+            alert("Please fill all required fields");
+            return;
+        }
+        dispatch(AddProduct({
+            ProductName: productName,
+            Code: code,
+            Description: description,
+            Quantity: quantity,
+            Price: price,
+            HasDiscount: hasDiscount,
+            DiscountPrice: discountPrice,
+            Weight: weight,
+            Size: size,
+            SubCategoryId: selectedCategory,
+            BrandId: selectedBrand,
+            ColorId: selectedColor,
+            Images: images,
+        }));
+        navigate("/products")
     };
 
     useEffect(() => {
@@ -34,7 +71,10 @@ export default function AddProducts() {
                             Cancel
                         </button>
                     </Link>
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">
+                    <button
+                        className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer"
+                        onClick={handleSave}
+                    >
                         Save
                     </button>
                 </div>
@@ -47,19 +87,29 @@ export default function AddProducts() {
                             <input
                                 placeholder="Product name"
                                 className="border rounded-md px-3 py-2 w-full"
+                                value={productName}
+                                onChange={(e) => setProductName(e.target.value)}
                             />
                             <input
                                 placeholder="Code"
                                 className="border rounded-md px-3 py-2 w-full"
+                                value={code}
+                                onChange={(e) => setCode(e.target.value)}
                             />
                         </div>
                         <textarea
                             placeholder="Description"
                             className="border rounded-md px-3 py-2 w-full h-28 mb-4"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <select className="border rounded-md px-3 py-2">
-                                <option>Categories</option>
+                            <select
+                                className="border rounded-md px-3 py-2"
+                                value={selectedCategory || ""}
+                                onChange={(e) => setSelectedCategory(Number(e.target.value))}
+                            >
+                                <option value="">Select Category</option>
                                 {categories.flatMap(cat =>
                                     cat.subCategories.map(sub => (
                                         <option key={sub.id} value={sub.id}>
@@ -68,15 +118,16 @@ export default function AddProducts() {
                                     ))
                                 )}
                             </select>
-                            <select className="border rounded-md px-3 py-2">
-                                <option value="">Brend</option>
-                                {brend?.map((brend) => {
-                                    return (
-                                        <option value={brend.id}>
-                                            {brend.brandName}
-                                        </option>
-                                    )
-                                })}
+
+                            <select
+                                className="border rounded-md px-3 py-2"
+                                value={selectedBrand || ""}
+                                onChange={(e) => setSelectedBrand(Number(e.target.value))}
+                            >
+                                <option value="">Select Brand</option>
+                                {brend?.map(b => (
+                                    <option key={b.id} value={b.id}>{b.brandName}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -87,16 +138,22 @@ export default function AddProducts() {
                                 type="number"
                                 placeholder="Product price"
                                 className="border rounded-md px-3 py-2"
+                                value={price}
+                                onChange={(e) => setPrice(Number(e.target.value))}
                             />
                             <input
                                 type="number"
                                 placeholder="Discount"
                                 className="border rounded-md px-3 py-2"
+                                value={discountPrice}
+                                onChange={(e) => setDiscountPrice(Number(e.target.value))}
                             />
                             <input
                                 type="number"
                                 placeholder="Count"
                                 className="border rounded-md px-3 py-2"
+                                value={hasDiscount}
+                                onChange={(e) => setHasDiscount(Number(e.target.value))}
                             />
                         </div>
                         <label className="flex items-center gap-2 text-sm">
@@ -156,9 +213,16 @@ export default function AddProducts() {
                                     key={col.id}
                                     title={col.colorName}
                                     className="w-6 h-6 rounded-full border cursor-pointer"
-                                    style={{
-                                        backgroundColor: colorMap[col.colorName.toLowerCase()] || "#ccc",
-                                    }}
+                                    style={{ backgroundColor: colorMap[col.colorName.toLowerCase()] || "#ccc" }}
+                                    onClick={() => setSelectedColor(col.id)}
+                                />
+                            ))}{color?.map((col) => (
+                                <div
+                                    key={col.id}
+                                    title={col.colorName}
+                                    className="w-6 h-6 rounded-full border cursor-pointer"
+                                    style={{ backgroundColor: colorMap[col.colorName.toLowerCase()] || "#ccc" }}
+                                    onClick={() => setSelectedColor(col.id)}
                                 />
                             ))}
                         </div>
@@ -214,7 +278,13 @@ export default function AddProducts() {
                                 id="upload"
                                 type="file"
                                 className="hidden"
+                                multiple
                                 accept="image/png,image/jpeg,image/svg+xml,image/gif"
+                                onChange={(e) => {
+                                    if (e.target.files) {
+                                        setImages(Array.from(e.target.files));
+                                    }
+                                }}
                             />
                         </label>
                     </div>

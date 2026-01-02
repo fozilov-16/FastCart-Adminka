@@ -155,7 +155,10 @@ export default function Products() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDel} color='primary' variant='solid'>Cancel</Button>
-          <Button onClick={() => dispatch(DeleteProduct(idxDel))} autoFocus variant='outlined' color='danger'>
+          <Button onClick={() => {
+            dispatch(DeleteProduct(idxDel))
+            handleCloseDel()
+          }} autoFocus variant='outlined' color='danger'>
             Delete
           </Button>
         </DialogActions>

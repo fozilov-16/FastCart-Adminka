@@ -2,27 +2,38 @@ import { Input, Button, Form } from "antd";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import logo from "../assets/logo.png";
 import fastcart from "../assets/fastcart.png";
 import { loginThunk } from "../api/api";
+import { GetToken } from "../../utils/axios";
 
 const Login = () => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const token = GetToken()
 
-  const { handleSubmit, handleChange, values } = useFormik({
+  useEffect(() => {
+    if(!token) {
+      navigate("/")
+    }
+  }, [token])
+
+  const { handleSubmit, handleChange, values, resetForm } = useFormik({
     initialValues: {
       userName: "",
       password: "",
     },
     onSubmit: async (values) => {
-      setLoading(true);
-      await dispatch(loginThunk(values));
-      setLoading(false);
-      navigate("/dashboard");
+      if (values.userName == 'SuperUser' && values.password == 'SuperUser2025') {
+        resetForm()
+        dispatch(loginThunk(values))
+        navigate('/dashboard')
+      } else {
+        alert('Error UserName or UserPassword')
+      }
     },
   });
 

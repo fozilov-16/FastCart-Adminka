@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosRequest } from "./../../utils/axios";
 import { SaveToken } from "./../../utils/axios";
+import type { AddProductPayload } from "../reducers/todoSlice";
 
 export const api = import.meta.env.VITE_URL_PRODUCTS;
 
@@ -72,3 +73,60 @@ export const GetColor = createAsyncThunk("todo/GetColor", async () => {
     console.error;
   }
 });
+
+export const userProfile = createAsyncThunk("todo/GetCategory", async () => {
+  try {
+    const { data } = await axiosRequest.get(`/UserProfile/get-user-profiles`);
+    return data.data;
+  } catch (error) {
+    console.error;
+  }
+});
+
+export const AddProduct = createAsyncThunk(
+  "todo/AddProduct",
+  async (payload: AddProductPayload, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("ProductName", payload.ProductName);
+      formData.append("Description", payload.Description);
+      formData.append("Quantity", payload.Quantity.toString());
+      formData.append("Code", payload.Code);
+      formData.append("Price", payload.Price.toString());
+      formData.append("SubCategoryId", payload.SubCategoryId.toString());
+      formData.append("BrandId", payload.BrandId.toString());
+      formData.append("ColorId", payload.ColorId.toString());
+
+      if (payload.HasDiscount !== undefined) {
+        formData.append("HasDiscount", String(payload.HasDiscount));
+      }
+      if (payload.DiscountPrice !== undefined) {
+        formData.append("DiscountPrice", payload.DiscountPrice.toString());
+      }
+      if (payload.Weight) {
+        formData.append("Weight", payload.Weight);
+      }
+      if (payload.Size) {
+        formData.append("Size", payload.Size);
+      }
+      if (payload.Images && payload.Images.length > 0) {
+        payload.Images.forEach((file) => {
+          formData.append("Images", file);
+        });
+      }
+      const { data } = await axiosRequest.post(
+        "/Product/add-product",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      return data;
+    } catch (error: any) {
+      console.error(error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
