@@ -71,7 +71,7 @@ const LayoutPage: React.FC = () => {
         </Content>
 
         <Footer style={{ textAlign: "center" }}>
-          Admin ©{new Date().getFullYear()}
+          Admin © {new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>
