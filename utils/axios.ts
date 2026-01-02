@@ -1,5 +1,6 @@
 import axios from "axios";
-import { api } from "../src/reducers/api";
+import { API_URL } from "../src/config/env";
+
 
 export const SaveToken = (token: string) => {
   localStorage.setItem("authToken", token);
@@ -10,7 +11,7 @@ export const GetToken = () => {
 };
 
 export const axiosRequest = axios.create({
-  baseURL: api,
+  baseURL: API_URL,
 });
 
 axiosRequest.interceptors.request.use(
