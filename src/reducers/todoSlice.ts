@@ -1,35 +1,74 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
+import { GetCategory, GetProduct } from "../api/api";
 
 export interface CounterState {
-  value: number
+  products: {
+    id: number;
+    productName: string;
+    price: number;
+    quantity: number;
+    categoryName: string;
+  }[];
+  isLoading: boolean;
 }
 
 const initialState: CounterState = {
-  value: 0,
+  products: [],
+  isLoading: false,
+};
+
+export interface Product {
+  id: number;
+  productName: string;
+  price: number;
+  quantity: number;
+  categoryName: string;
 }
 
-export const todoSLice = createSlice({
-  name: 'todo',
+export interface SubCategory {
+  id: number;
+  subCategoryName: string;
+}
+
+export interface Category {
+  id: number;
+  categoryImage: string;
+  categoryName: string;
+  subCategories: SubCategory[];
+}
+
+export interface CounterState {
+  products: Product[];
+  categories: Category[];
+  isLoading: boolean;
+}
+
+export const todoSlice = createSlice({
+  name: "todo",
   initialState,
-  reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1
-    },
-    decrement: (state) => {
-      state.value -= 1
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(GetProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(GetProduct.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.products = payload.data.products;
+    });
+    builder.addCase(GetProduct.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(GetCategory.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(GetCategory.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.categories = payload.data.categories;
+    });
+    builder.addCase(GetCategory.rejected, (state) => {
+      state.isLoading = false;
+    });
   },
-})
+});
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = todoSLice.actions
-
-export default todoSLice.reducer
+export default todoSlice.reducer;

@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import type { AppDispatch, RootState } from '../Redux/store';
+import type { AppDispatch, RootState } from '../store/store';
 import { api, DeleteProduct, EditProduct, GetProduct } from '../api/api';
 import Skeleton from "@mui/material/Skeleton";
 import Dialog from '@mui/material/Dialog';
@@ -25,16 +25,16 @@ import Stack from '@mui/material/Stack';
 
 
 export default function Products() {
-  const { products, isLoading } = useSelector((state: RootState) => state.counter)
+  const { products, isLoading } = useSelector((state: RootState) => state.todo)
   const dispatch = useDispatch<AppDispatch>()
   const [openDel, setOpenDel] = useState(false);
   const [idxDel, setIdxDel] = useState<number | null>(null)
   const [openEdit, setOpenEdit] = useState(false);
   const [idxEdit, setIdxEdit] = useState<number | null>(null)
   const [productNameEdit, setProductNameEdit] = useState("")
-  const [inventoryEdit, setInventoryEdit] = useState("")
-  const [categoryEdit, setCategoryEdit] = useState("")
-  const [priceEdit, setPriceEdit] = useState("")
+  const [inventoryEdit, setInventoryEdit] = useState<number>(0)
+  const [categoryEdit, setCategoryEdit] = useState<number>(0)
+  const [priceEdit, setPriceEdit] = useState<number>(0)
   const [brandId, setBrandId] = useState<number>(0);
   const [colorId, setColorId] = useState<number>(0);
   const [code, setCode] = useState("");
@@ -112,6 +112,7 @@ export default function Products() {
                 <Checkbox />
               </TableCell>
               <TableCell className="font-semibold">Product</TableCell>
+              <TableCell className="font-semibold">Name</TableCell>
               <TableCell className="font-semibold">Inventory</TableCell>
               <TableCell className="font-semibold">Category</TableCell>
               <TableCell className="font-semibold">Price</TableCell>
