@@ -21,6 +21,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
+import EditProductDialog from '../component/EditProductDialog';
+
 
 
 export default function Products() {
@@ -28,6 +30,9 @@ export default function Products() {
   const dispatch = useDispatch<AppDispatch>()
   const [openDel, setOpenDel] = useState(false);
   const [idxDel, setIdxDel] = useState<number | null>(null)
+  const [openEdit, setOpenEdit] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+
 
 
   const handleClickOpenDel = () => {
@@ -124,7 +129,13 @@ export default function Products() {
                   <TableCell>{item.categoryName}</TableCell>
                   <TableCell>$ {item.price}</TableCell>
                   <TableCell>
-                    <IconButton color="primary">
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        setSelectedProduct(item);
+                        setOpenEdit(true);
+                      }}
+                    >
                       <EditIcon fontSize="small" />
                     </IconButton>
                     <IconButton color="error" onClick={() => {
@@ -163,6 +174,11 @@ export default function Products() {
           </Button>
         </DialogActions>
       </Dialog>
+      <EditProductDialog
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+        product={selectedProduct}
+      />
     </div >
   )
 }

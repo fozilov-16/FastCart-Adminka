@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  AddProduct,
   GetBrend,
   GetCategory,
   GetColor,
   GetProduct,
+  GetSubCategory,
   userProfile,
 } from "../api/api";
 
@@ -38,9 +40,26 @@ export interface Profile {
   dob: number;
 }
 
+export interface EditProductPayload {
+  Id: number;
+  ProductName: string;
+  Description: string;
+  Quantity: number;
+  Code: string;
+  Price: number;
+  BrandId: number;
+  ColorId: number;
+  SubCategoryId: number;
+  HasDiscount: boolean;
+  DiscountPrice?: number;
+  Weight?: string;
+  Size?: string;
+}
+
 export interface TodoState {
   products: Product[];
   categories: Category[];
+  subCategory: Category[];
   brend: any[];
   color: any[];
   profile: Profile[];
@@ -54,6 +73,7 @@ const initialState: TodoState = {
   isLoading: false,
   brend: [],
   color: [],
+  subCategory: [],
 };
 
 export interface AddProductPayload {
@@ -115,6 +135,26 @@ export const todoSlice = createSlice({
       state.color = payload.data;
     });
     builder.addCase(GetColor.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(GetSubCategory.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(GetSubCategory.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.subCategory = payload;
+    });
+    builder.addCase(GetSubCategory.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(AddProduct.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(AddProduct.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.products.push(payload);
+    });
+    builder.addCase(AddProduct.rejected, (state) => {
       state.isLoading = false;
     });
   },

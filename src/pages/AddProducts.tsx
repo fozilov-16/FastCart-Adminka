@@ -5,7 +5,7 @@ import { AddProduct, GetBrend, GetCategory, GetColor } from "../api/api";
 import type { AppDispatch, RootState } from "../store/store";
 
 export default function AddProducts() {
-    const { categories, brend, color } = useSelector((state: RootState) => state.todo)
+    const { categories, brend, color, isLoading } = useSelector((state: RootState) => state.todo)
     const dispatch = useDispatch<AppDispatch>()
     const [productName, setProductName] = useState("");
     const [code, setCode] = useState("");
@@ -33,27 +33,34 @@ export default function AddProducts() {
         purple: "#a855f7",
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!productName || !code || !selectedCategory || !selectedBrand || !selectedColor) {
             alert("Please fill all required fields");
             return;
         }
-        dispatch(AddProduct({
-            ProductName: productName,
-            Code: code,
-            Description: description,
-            Quantity: quantity,
-            Price: price,
-            HasDiscount: hasDiscount,
-            DiscountPrice: discountPrice,
-            Weight: weight,
-            Size: size,
-            SubCategoryId: selectedCategory,
-            BrandId: selectedBrand,
-            ColorId: selectedColor,
-            Images: images,
-        }));
-        navigate("/products")
+
+        try {
+            await dispatch(
+                AddProduct({
+                    ProductName: productName,
+                    Code: code,
+                    Description: description,
+                    Quantity: quantity,
+                    Price: price,
+                    HasDiscount: hasDiscount,
+                    DiscountPrice: discountPrice,
+                    Weight: weight,
+                    Size: size,
+                    SubCategoryId: selectedCategory,
+                    BrandId: selectedBrand,
+                    ColorId: selectedColor,
+                    Images: images,
+                })
+            ).unwrap();
+            navigate("/products");
+        } catch (err) {
+            alert("Ошибка при добавлении продукта: " + err);
+        }
     };
 
     useEffect(() => {
@@ -72,10 +79,12 @@ export default function AddProducts() {
                         </button>
                     </Link>
                     <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm cursor-pointer flex items-center justify-center gap-2"
                         onClick={handleSave}
+                        disabled={isLoading}
                     >
-                        Save
+                        {isLoading && <span className="loader-border animate-spin rounded-full w-4 h-4 border-2 border-white border-t-transparent"></span>}
+                        {isLoading ? "Saving..." : "Save"}
                     </button>
                 </div>
             </div>
@@ -148,13 +157,14 @@ export default function AddProducts() {
                                 value={discountPrice}
                                 onChange={(e) => setDiscountPrice(Number(e.target.value))}
                             />
-                            <input
-                                type="number"
-                                placeholder="Count"
-                                className="border rounded-md px-3 py-2"
-                                value={hasDiscount}
-                                onChange={(e) => setHasDiscount(Number(e.target.value))}
-                            />
+                            <label className="flex items-center gap-2 border rounded-md px-3 py-2 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={hasDiscount}
+                                    onChange={(e) => setHasDiscount(e.target.checked)}
+                                />
+                                Has Discount
+                            </label>
                         </div>
                         <label className="flex items-center gap-2 text-sm">
                             <input type="checkbox" />

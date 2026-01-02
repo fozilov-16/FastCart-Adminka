@@ -1,7 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosRequest } from "./../../utils/axios";
 import { SaveToken } from "./../../utils/axios";
-import type { AddProductPayload } from "../reducers/todoSlice";
+import type {
+  AddProductPayload,
+  EditProductPayload,
+} from "../reducers/todoSlice";
 
 export const api = import.meta.env.VITE_URL_PRODUCTS;
 
@@ -128,5 +131,46 @@ export const AddProduct = createAsyncThunk(
       console.error(error);
       return rejectWithValue(error.response?.data || error.message);
     }
+  }
+);
+
+export const EditProduct = createAsyncThunk(
+  "todo/EditProduct",
+  async (payload: EditProductPayload, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosRequest.put(
+        "/Product/update-product?",
+        null,
+        {
+          params: {
+            Id: payload.Id,
+            ProductName: payload.ProductName,
+            Description: payload.Description,
+            Quantity: payload.Quantity,
+            Code: payload.Code,
+            Price: payload.Price,
+            BrandId: payload.BrandId,
+            ColorId: payload.ColorId,
+            SubCategoryId: payload.SubCategoryId,
+            HasDiscount: payload.HasDiscount,
+            DiscountPrice: payload.DiscountPrice,
+            Weight: payload.Weight,
+            Size: payload.Size,
+          },
+        }
+      );
+
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const GetSubCategory = createAsyncThunk(
+  "todo/GetSubCategory",
+  async () => {
+    const { data } = await axiosRequest.get("/SubCategory/get-sub-category");
+    return data.data;
   }
 );
