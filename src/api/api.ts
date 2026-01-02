@@ -1,10 +1,31 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosRequest } from "./../../utils/axios";
+import { SaveToken } from "./../../utils/axios";
+import axios from "axios";
 
 export const api = import.meta.env.VITE_URL_PRODUCTS;
 
+export const loginThunk = createAsyncThunk(
+  "auth/login",
+  async (
+    obj: { userName: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axiosRequest.post("/Account/login", obj);
+      SaveToken(data.data);
+      localStorage.setItem("userName", obj.userName);
+      return data.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Login error"
+      );
+    }
+  }
+);
+
 export const GetProduct = createAsyncThunk(
-  "counter/GetProduct",
+  "todo/GetProduct",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await axiosRequest.get("/Product/get-products");
@@ -18,8 +39,19 @@ export const GetProduct = createAsyncThunk(
   }
 );
 
+export const GetCategory = createAsyncThunk(
+  "todo/GetCategory", async () => {
+    try {
+      const { data } = await axiosRequest.get(`/Category/get-categories`);
+      return data.data;
+    } catch (error) {
+      console.error
+    }
+  }
+)
+
 export const DeleteProduct = createAsyncThunk(
-  "counter/DeleteProduct",
+  "todo/DeleteProduct",
   async (id: number, { dispatch, rejectWithValue }) => {
     try {
       await axiosRequest.delete(`/Product/delete-product?id=${id}`);
@@ -36,7 +68,7 @@ export const DeleteProduct = createAsyncThunk(
 );
 
 export const EditProduct = createAsyncThunk(
-  "counter/EditProduct",
+  "todo/EditProduct",
   async (
     {
       idxEdit,
