@@ -34,3 +34,57 @@ export const DeleteProduct = createAsyncThunk(
     }
   }
 );
+
+export const EditProduct = createAsyncThunk(
+  "counter/EditProduct",
+  async (
+    {
+      idxEdit,
+      productNameEdit,
+      inventoryEdit,
+      categoryEdit,
+      priceEdit,
+      brandId,
+      colorId,
+      code,
+      description,
+      hasDiscount,
+    }: {
+      idxEdit: number;
+      productNameEdit: string;
+      inventoryEdit: number;
+      categoryEdit: number;
+      priceEdit: number;
+      brandId: number;
+      colorId: number;
+      code: string;
+      description: string;
+      hasDiscount: boolean;
+    },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      await axiosRequest.put(`/Product/update-product?`, {
+        params: {
+          Id: idxEdit,
+          BrandId: brandId,
+          ColorId: colorId,
+          ProductName: productNameEdit,
+          Description: description,
+          Quantity: inventoryEdit,
+          Code: code,
+          Price: priceEdit,
+          HasDiscount: hasDiscount,
+          SubCategoryId: categoryEdit,
+        },
+      });
+
+      dispatch(GetProduct());
+    } catch (error: any) {
+      return rejectWithValue({
+        message: error.response?.data?.message || error.message,
+        status: error.response?.status,
+      });
+    }
+  }
+);
