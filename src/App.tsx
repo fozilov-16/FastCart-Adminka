@@ -8,6 +8,7 @@ import Others from "./pages/Others"
 import Categories from "./pages/other/Categories"
 import Brands from "./pages/other/Brands"
 import Banners from "./pages/other/Banners"
+import AddProducts from "./pages/AddProducts"
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "products",
         element: <Products />
+      },
+      {
+        path: "addProducts",
+        element: <AddProducts />
       },
       {
         path: "others",

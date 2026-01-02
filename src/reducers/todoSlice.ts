@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GetCategory, GetProduct } from "../api/api";
+import { GetBrend, GetCategory, GetColor, GetProduct } from "../api/api";
 
 export interface CounterState {
   products: {
@@ -14,6 +14,9 @@ export interface CounterState {
 
 const initialState: CounterState = {
   products: [],
+  categories: [],
+  brend: [],
+  color: [],
   isLoading: false,
 };
 
@@ -40,6 +43,8 @@ export interface Category {
 export interface CounterState {
   products: Product[];
   categories: Category[];
+  brend: any[];
+  color: any[];
   isLoading: boolean;
 }
 
@@ -63,9 +68,29 @@ export const todoSlice = createSlice({
     });
     builder.addCase(GetCategory.fulfilled, (state, { payload }) => {
       state.isLoading = false;
-      state.categories = payload.data.categories;
+      state.categories = payload;
     });
     builder.addCase(GetCategory.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(GetBrend.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(GetBrend.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.brend = payload.data;
+    });
+    builder.addCase(GetBrend.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(GetColor.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(GetColor.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.color = payload.data;
+    });
+    builder.addCase(GetColor.rejected, (state) => {
       state.isLoading = false;
     });
   },

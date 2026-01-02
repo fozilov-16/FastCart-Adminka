@@ -12,7 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import type { AppDispatch, RootState } from '../store/store';
-import { api, DeleteProduct, EditProduct, GetProduct } from '../api/api';
+import { api, DeleteProduct, GetProduct } from '../api/api';
 import Skeleton from "@mui/material/Skeleton";
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -20,8 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import { Button } from 'antd';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
+import { Link } from 'react-router-dom';
 
 
 export default function Products() {
@@ -29,17 +28,7 @@ export default function Products() {
   const dispatch = useDispatch<AppDispatch>()
   const [openDel, setOpenDel] = useState(false);
   const [idxDel, setIdxDel] = useState<number | null>(null)
-  const [openEdit, setOpenEdit] = useState(false);
-  const [idxEdit, setIdxEdit] = useState<number | null>(null)
-  const [productNameEdit, setProductNameEdit] = useState("")
-  const [inventoryEdit, setInventoryEdit] = useState<number>(0)
-  const [categoryEdit, setCategoryEdit] = useState<number>(0)
-  const [priceEdit, setPriceEdit] = useState<number>(0)
-  const [brandId, setBrandId] = useState<number>(0);
-  const [colorId, setColorId] = useState<number>(0);
-  const [code, setCode] = useState("");
-  const [description, setDescription] = useState("");
-  const [hasDiscount, setHasDiscount] = useState(true);
+
 
   const handleClickOpenDel = () => {
     setOpenDel(true);
@@ -47,14 +36,6 @@ export default function Products() {
 
   const handleCloseDel = () => {
     setOpenDel(false);
-  };
-
-  const handleClickOpenEdit = () => {
-    setOpenEdit(true);
-  };
-
-  const handleCloseEdit = () => {
-    setOpenEdit(false);
   };
 
   const SkeletonRow = () => (
@@ -99,9 +80,11 @@ export default function Products() {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Products</h2>
 
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
-          + Add order
-        </button>
+        <Link to="/addProducts">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm cursor-pointer">
+            + Add order
+          </button>
+        </Link>
       </div>
 
       <TableContainer component={Paper} className="!shadow-none">
@@ -141,20 +124,7 @@ export default function Products() {
                   <TableCell>{item.categoryName}</TableCell>
                   <TableCell>$ {item.price}</TableCell>
                   <TableCell>
-                    <IconButton color="primary" onClick={() => {
-                      handleClickOpenEdit();
-                      setProductNameEdit(item.productName);
-                      setInventoryEdit(item.quantity);
-                      setCategoryEdit(item.categoryId);
-                      setPriceEdit(item.price);
-                      setIdxEdit(item.id);
-
-                      setBrandId(item.brandId);
-                      setColorId(item.colorId);
-                      setCode(item.code);
-                      setDescription(item.description);
-                      setHasDiscount(item.hasDiscount);
-                    }}>
+                    <IconButton color="primary">
                       <EditIcon fontSize="small" />
                     </IconButton>
                     <IconButton color="error" onClick={() => {
@@ -190,116 +160,6 @@ export default function Products() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={openEdit}
-        onClose={handleCloseEdit}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle sx={{ fontWeight: 600 }}>
-          Edit Product
-        </DialogTitle>
-
-        <DialogContent>
-          <Stack spacing={2} mt={1}>
-            <TextField
-              label="Product name"
-              value={productNameEdit}
-              onChange={(e) => setProductNameEdit(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Inventory"
-              type="number"
-              value={inventoryEdit}
-              onChange={(e) => setInventoryEdit(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Category Id"
-              type="number"
-              value={categoryEdit}
-              onChange={(e) => setCategoryEdit(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Price"
-              type="number"
-              value={priceEdit}
-              onChange={(e) => setPriceEdit(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Brand Id"
-              type="number"
-              value={brandId}
-              onChange={(e) => setBrandId(Number(e.target.value))}
-              fullWidth
-            />
-
-            <TextField
-              label="Color Id"
-              type="number"
-              value={colorId}
-              onChange={(e) => setColorId(Number(e.target.value))}
-              fullWidth
-            />
-
-            <TextField
-              label="Code"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              fullWidth
-            />
-
-            <TextField
-              label="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              fullWidth
-            />
-
-            <Checkbox
-              checked={hasDiscount}
-              onChange={(e) => setHasDiscount(e.target.checked)}
-            /> Has Discount
-          </Stack>
-        </DialogContent>
-
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={handleCloseEdit} variant="outlined">
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            disabled={!productNameEdit || !priceEdit}
-            onClick={() => {
-              dispatch(
-                EditProduct({
-                  idxEdit: idxEdit!,
-                  productNameEdit,
-                  inventoryEdit: Number(inventoryEdit),
-                  categoryEdit: Number(categoryEdit),
-                  priceEdit: Number(priceEdit),
-                  brandId,
-                  colorId,
-                  code,
-                  description,
-                  hasDiscount,
-                })
-              );
-              handleCloseEdit();
-            }}
-          >
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-    </div>
+    </div >
   )
 }
