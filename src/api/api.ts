@@ -170,3 +170,15 @@ export const GetSubCategory = createAsyncThunk(
     return data.data;
   }
 );
+
+export const DeleteCategory = createAsyncThunk(
+  "todo/DeleteCategory",
+  async (id, { dispatch }) => {
+    try {
+      await axiosRequest.delete(`/Category/delete-category?id=${id}`);
+      alert("Deleted successfuly!");
+    } catch (error: any) {
+      alert(error.response.errors + "!");
+    }
+  }
+);
