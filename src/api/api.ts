@@ -77,13 +77,9 @@ export const GetColor = createAsyncThunk("todo/GetColor", async () => {
   }
 });
 
-export const userProfile = createAsyncThunk("todo/GetCategory", async () => {
-  try {
-    const { data } = await axiosRequest.get(`/UserProfile/get-user-profiles`);
-    return data.data;
-  } catch (error) {
-    console.error;
-  }
+export const userProfile = createAsyncThunk("todo/userProfile", async () => {
+  const { data } = await axiosRequest.get("/UserProfile/get-user-profiles");
+  return data.data;
 });
 
 export const AddProduct = createAsyncThunk(

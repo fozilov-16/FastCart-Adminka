@@ -15,6 +15,7 @@ export interface Product {
   price: number;
   quantity: number;
   categoryName: string;
+  image?: string;
 }
 
 export interface SubCategory {
@@ -30,14 +31,18 @@ export interface Category {
 }
 
 export interface Profile {
-  id: string;
   userId: string;
   userName: string;
+  image: string;
+  userRoles: {
+    id: string;
+    name: string;
+  }[];
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: number;
-  dob: number;
+  phoneNumber: string;
+  dob: string;
 }
 
 export interface EditProductPayload {
@@ -155,6 +160,18 @@ export const todoSlice = createSlice({
       state.products.push(payload);
     });
     builder.addCase(AddProduct.rejected, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(userProfile.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(userProfile.fulfilled, (state, { payload }) => {
+      state.isLoading = false;
+      state.profile = payload;
+    });
+
+    builder.addCase(userProfile.rejected, (state) => {
       state.isLoading = false;
     });
   },

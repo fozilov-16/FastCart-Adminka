@@ -10,12 +10,12 @@ export default function AddProducts() {
     const [productName, setProductName] = useState("");
     const [code, setCode] = useState("");
     const [description, setDescription] = useState("");
-    const [quantity, setQuantity] = useState<number>(0);
+    const [quantity] = useState<number>(0);
     const [price, setPrice] = useState<number>(0);
     const [discountPrice, setDiscountPrice] = useState<number>(0);
     const [hasDiscount, setHasDiscount] = useState(false);
-    const [weight, setWeight] = useState("");
-    const [size, setSize] = useState("");
+    const [weight] = useState("");
+    const [size] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
     const [selectedColor, setSelectedColor] = useState<number | null>(null);

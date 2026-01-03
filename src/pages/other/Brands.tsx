@@ -1,14 +1,14 @@
 import { Input, Button } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import type { RootState } from '../../store/store'
+import type { AppDispatch, RootState } from '../../store/store'
 import { useEffect } from 'react'
 import { GetBrend } from '../../api/api'
 
 
 const Brands = () => {
   const { brend } = useSelector((state: RootState) => state.todo)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     dispatch(GetBrend())

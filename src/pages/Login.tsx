@@ -8,11 +8,12 @@ import logo from "../assets/logo.png";
 import fastcart from "../assets/fastcart.png";
 import { loginThunk } from "../api/api";
 import { GetToken } from "../../utils/axios";
+import type { AppDispatch } from "../store/store";
 
 const Login = () => {
-  const dispatch = useDispatch<any>();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const token = GetToken()
 
   useEffect(() => {

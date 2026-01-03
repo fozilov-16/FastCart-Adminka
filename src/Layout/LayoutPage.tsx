@@ -14,13 +14,13 @@ const LayoutPage: React.FC = () => {
     { key: "/others", icon: <PlusOutlined />, label: "Others" }
   ]
 
-  
+
   const userMenu = {
     items: [
       { key: "login", label: "Login" },
       { key: "logout", label: "Logout" }
     ],
-    onClick: ({ key }) => {
+    onClick: ({ key }: { key: string }) => {
       if (key === "logout") {
         console.log("Logging out...")
       } else if (key === "login") {
